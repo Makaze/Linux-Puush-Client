@@ -1,4 +1,4 @@
-Puush Client
+Linux Puu.sh Client
 ============
 
 A simple Puush client for Linux machines.
