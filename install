@@ -1,6 +1,8 @@
 #!/bin/bash
 
 replacement=""
+replacement=""
+replacement=""
 
 read -p 'Puu.sh API Key: ' key
 
@@ -10,15 +12,15 @@ sed -i $replacement puush
 
 read -p 'Filepath to save to: ' path
 
-replacement=s/SAVEDIR=.*/SAVEDIR=\"$path\"/
+replacement=s@SAVE_DIR=.*@SAVE_DIR=\"$path\"@
 
 sed -i $replacement puush
 
 read -p 'Screenshot command: ' scrn_cmd
 
-replacement=s/SCREEN_CMD=.*/SCREEN_CMD=\"$scrn_cmd\"/
+replacement=s@SCREEN_CMD=.*@SCREEN_CMD=\"$scrn_cmd\"@
 
-sed -i $replacement puush
+sed -i "$replacement" puush
 
 echo ' '
 
