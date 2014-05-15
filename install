@@ -1,9 +1,5 @@
 #!/bin/bash
 
-replacement=""
-replacement=""
-replacement=""
-
 read -p 'Puu.sh API Key: ' key
 
 replacement=s/PUUSH_API_KEY=.*/PUUSH_API_KEY=\"$key\"/
