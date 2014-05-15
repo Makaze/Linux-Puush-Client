@@ -1,0 +1,54 @@
+#!/bin/bash
+
+PUUSH_API_KEY=""
+SAVEDIR=""
+SCREEN_CMD=""
+SHOTDIR="/tmp/puush"
+SHOT="/tmp/puush/$RANDOM.png"
+
+while getopts u: option
+do
+	case "${option}"
+	in
+		u) URL=${OPTARG};;
+	esac
+done
+
+if [ -z "$URL" ]; then
+	notify-send "puu.sh" "Select to capture."
+	mkdir $SHOTDIR
+	eval $SCREEN_CMD $SHOTDIR
+	cp $SHOTDIR/*.png $SAVEDIR
+	mv $SHOTDIR/*.png $SHOT
+	curl "https://puush.me/api/up" -# -F "k=$PUUSH_API_KEY" -F "z=null" -F "f=@$SHOT" | sed -E 's/^.+,(.+),.+,.+$/\1/' | xclip -selection "clipboard"
+	LINK=`xclip -o -selection "clipboard"`
+	notify-send "puu.sh" "Link copied to clipboard.\n\n$LINK"
+	echo "Link copied to clipboard. | $LINK"
+	rm -r $SHOTDIR
+else
+	case "$URL" in
+		*".png") true;;
+		*".gif") true;;
+		*".jpg") true;;
+		*) false;;
+	esac
+	
+	if [ $? -ne 0 ]; then
+		echo "Illegal filetype. Accepted filetypes: .png .gif .jpg"
+		exit
+	fi
+	
+	mkdir $SHOTDIR
+	wget -q $URL -O $SHOT
+
+	if [ $? -eq 0 ]; then
+		curl "https://puush.me/api/up" -# -F "k=$PUUSH_API_KEY" -F "z=null" -F "f=@$SHOT" | sed -E 's/^.+,(.+),.+,.+$/\1/' | xclip -selection "clipboard"
+		LINK=`xclip -o -selection "clipboard"`
+		notify-send "puu.sh" "Link copied to clipboard.\n\n$LINK"
+		echo "Link copied to clipboard. | $LINK"
+		rm -r $SHOTDIR
+	else
+		echo "An error occurred while downloading '$SHOT'."
+		rm -r $SHOTDIR
+	fi
+fi
